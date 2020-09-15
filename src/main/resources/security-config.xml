@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+    <http auto-config="true" use-expressions="true">
+        <intercept-url pattern="/" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
+        <intercept-url pattern="/welcome" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
+        <intercept-url pattern="/client/profile" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/editClient" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/updateProfile" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/addAmountToBalance" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/contracts" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/viewContract" access="hasAnyRole('ROLE_USER')"/>
+
+        <intercept-url pattern="/client/viewAllContractsForClient" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/viewContract" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/blockByClient" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/unblockByClient" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/changeTariff" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/chooseTariff" access="hasAnyRole('ROLE_USER')"/>
+        <intercept-url pattern="/client/setNewTariff" access="hasAnyRole('ROLE_USER')"/>
+
+        <intercept-url pattern="/operator/viewAllClients" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/viewClient" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/searchClientByNumber" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/deleteClient" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/addAmountToBalance" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/editProfile" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/updateProfile" access="hasRole('ROLE_ADMIN')"/>
+
+        <intercept-url pattern="/operator/viewAllTariffs" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/viewTariff" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/deleteTariff" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/newTariff" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/createTariff" access="hasRole('ROLE_ADMIN')"/>
+
+        <intercept-url pattern="/operator/newOption" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/createOption" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/viewOption" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/editOption" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/updateOption" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/deleteOption" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/deleteDependentOption" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/deleteAllDependentOptions" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/deleteIncompatibleOption" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/deleteAllIncompatibleOptions" access="hasRole('ROLE_ADMIN')"/>
+
+        <intercept-url pattern="/operator/newContract" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/createContract" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/viewAllContracts" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/blockByOperator" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/unblockByOperator" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/viewContract" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/changeTariff" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/chooseTariff" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/setNewTariff" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/deleteContractForClient" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/rest/tariffs" access="permitAll"/>
+
+        <access-denied-handler error-page="/login" />
+
+        <form-login login-page="/login"
+                    default-target-url="/welcome"
+                    authentication-failure-url="/login?error"
+                    username-parameter="email"
+                    password-parameter="password"/>
+
+        <logout logout-success-url="/login?logout"/>
+    </http>
+
+    <beans:bean id="userDetailsServiceImpl" class="ru.kalashnikofffs.eCare.serviceImpl.UserDetailsServiceImpl"/>
+
+    <beans:bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <beans:constructor-arg name="strength" value="12"/>
+    </beans:bean>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="userDetailsServiceImpl">
+            <password-encoder ref="encoder"/>
+        </authentication-provider>
+    </authentication-manager>
+</beans:beans>
